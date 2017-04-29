@@ -1,0 +1,187 @@
+<resources>
+    <string name="app_name">Uncertainty Calculator</string>
+    <string name="action_settings">Settings</string>
+    <string name="edit_message">Enter an equation</string>
+    <string name="button_evaluate">=</string>
+    <string name="button_save">Save</string>
+    <string name="button_format">Format</string>
+    <string name="button_saved">Saved</string>
+    <string name="button_pi">\u03C0</string>
+    <string name="button_e">e</string>
+    <string name="button_pm">\u00B1</string>
+    <string name="preview_placeholder">Equation Preview</string>
+    <string name="result_message_failed">Couldn\'t parse that equation</string>
+    <string name="result_message_argument_failed">Function arguments out of range</string>
+    <string name="dialog_save_title">Choose a save slot</string>
+    <string name="dialog_insert_title">Choose a result to insert</string>
+    <string name="list_letter_number_separator">:\u0020\u0020</string>
+    <string name="action_info">Information</string>
+    <string-array name="alphabet_upper">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <!-- No E because of double's exponent notation-->
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+    <string name="title_activity_information">InformationActivity</string>
+    <string name="info_message_main" formatted="false"><![CDATA[
+<h2>Purpose:</h2>
+<p style=\"text-align:justify;line-height:1.2\">
+This utility provides the typical functions of a calculator, extended to operate on numbers with
+uncertainties (numbers of the form: nominal value \u00B1 absolute uncertainty).
+</p>
+
+<br/>
+<h2>How-to:</h2>
+<ul style=\"text-align:justify;padding-left:20px;line-height:1.2\">
+	<li>Enter an equation in the text-box. (See the \"Calculations\" section for what can be processed.)</li><br/>
+	<li>Ensure that the preview matches the desired expression. (Use more brackets to fine-tune it).</li><br/>
+	<li>Tap the \"=\" button (or, while typing, the enter key on the keyboard) to get a result.
+	If an error is displayed, edit the equation and try again.</li><br/>
+	<li>The default result format shows the exact value that will be used in future calculations,
+	and the percentage uncertainty. To see the result in a standardised format, tap the \"FORMAT\" button.</li><br/>
+	<li>To save the result for future calculations, tap the \"SAVE\" button and tap on a slot (free
+	or empty). Saved results are shown in formatted form, but the original result is used in further
+	calculations.</li><br/>
+	<li>To insert a result in later calculations, type in the corresponding upper-case letter of the
+	save slot, or tap the \"SAVED\" button then tap on the desired save slot. This inserts the letter
+	into the equation.</li><br/>
+	<li>To use the value of \u03C0 or e, tap the corresponding button. These (also) insert the
+	appropriate letters into the equation.</li>
+</ul>
+
+<br/>
+<h2>Calculations:</h2>
+<p style=\"text-align:justify;line-height:1.2\">
+The equation preview field shows exactly how the equation will be interpreted in the calculation.
+This involves the following operators in the shown order (a variant of BEDMAS).</p>
+
+<table border="1" align="center">
+    <th>Operation</th>
+    <th>Symbol</th>
+
+    <tr>
+        <td>Bracket</td>
+        <td style="text-align:center">( and )</td>
+    </tr>
+	<tr>
+        <td>Uncertainty</td>
+        <td style="text-align:center">\u00B1</td>
+    </tr>
+	<tr>
+        <td>Exponentiation</td>
+        <td style="text-align:center">^</td>
+    </tr>
+	<tr>
+        <td>Division</td>
+        <td style="text-align:center">/</td>
+    </tr>
+	<tr>
+        <td>Multiplication</td>
+        <td style="text-align:center">*</td>
+    </tr>
+	<tr>
+        <td>Addition</td>
+        <td style="text-align:center">+</td>
+    </tr>
+	<tr>
+        <td>Subtraction</td>
+        <td style="text-align:center">-</td>
+    </tr>
+</table>
+
+<p style=\"text-align:justify;line-height:1.2\">
+The supported functions are: <b>sqrt</b>, <b>sin</b>, <b>cos</b>, <b>tan</b>, <b>asin</b>,
+<b>acos</b>, <b>atan, sinh</b>, <b>cosh</b>, <b>tanh</b>, <b>log</b>, <b>ln</b>, and <b>exp</b>.
+Refer to the \"Example\" section for usage. All trigonometric calculations take place in <b>radians</b>.
+</p>
+
+<br/>
+<h2>Uncertainties:</h2>
+<p style=\"text-align:justify;line-height:1.2\">
+The calculated value of every absolute uncertainty is found through some combination of the
+following three rules:
+</p>
+<ol type=\"1\" style=\"text-align:justify;padding-left:20px;line-height:1.2\">
+<li>Absolute uncertainties are combined during addition and subtraction.</li><br/>
+<li>Percentage uncertainties are combined during division and multiplication.</li><br/>
+<li>For operations that can\'t (easily) be converted to comply with the above two, the brute force
+method is used.</li>
+</ol>
+<p style=\"text-align:justify;line-height:1.2\">
+The brute force method involves calculating the absolute uncertainty of f(x\u00B1&delta;x) as the
+difference between f(x) and f(x+&delta;x). If the sum of nominal and absolute uncertainty values of an
+operand falls outside the domain of the desired function, the difference is used instead, if that
+too (or the nominal value from the start) doesn\'t fall in the valid domain, an error will be displayed.
+</p>
+
+<br/>
+<h2>Miscellaneous:</h2>
+<ul style=\"text-align:justify;padding-left:20px;line-height:1.2\">
+	<li>The \"standardised form\" that \"FORMAT\" gives is the absolute	uncertainty stated to 1s.f.
+	and nominal value the same number of decimal places as the processed absolute uncertainty.
+	Engineering notation (scientific notation with exponents divisible by 3) is used to show values
+	of unusual scale.</li><br/>
+	<li>The letter \"E\" may be used as a part of entered numbers to represent \"*10^\" so this
+	letter is not given as a save slot.</li><br/>
+	<li>The \"e\" button represents the value, not the function. For exponential calculations, use
+	\"exp(x)\" or \"e^(x)\".</li><br/>
+	<li>To clarify the equation preview, \"sqrt\" and \"exp\" functions are replaced with surds and
+	\"e^\"s.</li><br/>
+	<li>The only recognised characters are letters (including \u03C0), numbers, operators, and
+	decimal points.</li><br/>
+	<li>Unbalanced brackets are dealt with by adding opposing brackets to the beginning or end of
+	the entered equation.</li><br/>
+	<li>All space characters are ignored.</li><br/>
+	<li>Imaginary numbers are not dealt with. At all.</li>
+</ul>
+
+<br/>
+<h2>Example:</h2>
+<p style=\"text-align:justify;line-height:1.2\">
+In a physics lab experiment involving fluid dynamics, the following expression needed to be evaluated:
+<br/><br/>$$sqrt(2*9.81*(0.11\u00B10.002))$$<br/>
+By typing that equation (or one without the brackets around the uncertainty) in the provided text-box,
+the equation preview field displays the following formatted equation:
+<br/><br/>$$√((2*9.81)*(0.11±0.002))$$<br/>
+which looks right. A tap of the \"=\" button replaces the equation with the following result:
+<br/><br/>$$1.4690813456034353 \u00B1 0.013355284960031228$$<br/>
+along with the percentage uncertainty (which is useful for intermediate calculations). As this was the final
+calculation, the only remaining is to convert this to the standard uncertainty format. A tap of
+the \"FORMAT\" button yields:
+<br/><br/>$$1.47 \u00B1 0.01$$<br/>
+The alternative (manual) method involves evaluating the expression using the nominal value
+(1.4690813456034353), then evaluating the absolute uncertainty by multiplying this result by half of
+the percentage uncertainty (due to the square root) of 0.11\u00B10.002 (0.9090…%) yielding 0.013355284960031228 - the
+same result.
+</p>
+<br/>
+<hr width=100% height=1px color=#FDA859/>
+<p style=\"text-align:center;font-size:80%\">
+Equation preview powered by <a href=\"http://mathscribe.com/author/jqmath.html\">jqMath</a> - written by Dave Barton<br/><br/>
+App icon generated using <a href="https://romannurik.github.io/AndroidAssetStudio/index.html">
+Android Asset Studio</a> - written by Roman Nurik<br/><br/>
+App written by Marc Katzef</p>
+]]></string>
+</resources>

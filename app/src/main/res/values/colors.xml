@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FDA859</color>
+    <color name="colorPrimaryDark">#D78E4B</color>
+    <color name="colorAccent">#D78E4B</color> <!-- 03A9F4 -->
+    <color name="test">#D78E4B</color>
+</resources>

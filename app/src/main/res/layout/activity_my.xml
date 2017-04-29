@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.nooverlap314.uncertaintycalculator.MyActivity"
+    android:id="@+id/activity_my">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/side_padding"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingTop="@dimen/top_bottom_padding"
+        android:paddingBottom="@dimen/top_bottom_padding"
+        android:orientation="horizontal"
+        android:id="@+id/result_option_bar">
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_save"
+            android:textColor="@color/colorAccent"
+            android:onClick="savePrompt" />
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_format"
+            android:textColor="@color/colorAccent"
+            android:onClick="formatResult" />
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingLeft="@dimen/side_padding"
+        android:paddingTop="@dimen/top_bottom_padding"
+        android:paddingBottom="@dimen/top_bottom_padding"
+        android:id="@+id/equation_action_bar">
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_saved"
+            android:textColor="@color/colorAccent"
+            android:onClick="insertPrompt" />
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_pi"
+            android:textColor="@color/colorAccent"
+            android:textAllCaps="false"
+            android:onClick="insertPi" />
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_e"
+            android:textColor="@color/colorAccent"
+            android:textAllCaps="false"
+            android:onClick="insertE" />
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_pm"
+            android:textColor="@color/colorAccent"
+            android:onClick="insertUnc" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/equation_action_bar"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingLeft="@dimen/side_padding"
+        android:paddingTop="@dimen/top_bottom_padding"
+        android:paddingBottom="@dimen/top_bottom_padding"
+        android:id="@+id/equation_entry_bar">
+
+        <EditText
+            android:layout_weight="6"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_gravity="center_vertical"
+            android:hint="@string/edit_message"
+            android:textSize="@dimen/text_size_default"
+            android:imeOptions="actionDone"
+            android:background="#00000000"
+            android:gravity="center"
+            android:id="@+id/equation_entry" />
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:text="@string/button_evaluate"
+            android:onClick="evaluate" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_below="@id/result_option_bar"
+        android:layout_above="@id/equation_entry_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingLeft="@dimen/side_padding"
+        android:id="@+id/webview_holder">
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foregroundGravity="center"
+            android:id="@+id/main_activity_webview">
+        </WebView>
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_above="@id/webview_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingLeft="@dimen/side_padding">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_above="@id/equation_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingLeft="@dimen/side_padding">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorAccent"/>
+    </LinearLayout>
+
+</RelativeLayout>
