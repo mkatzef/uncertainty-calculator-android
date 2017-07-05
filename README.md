@@ -16,6 +16,8 @@ Typical use consists of the following actions:
 
 \* Previous results may be referred to in calculations by the letter of a save slot. These may be found and entered through the "SAVED" menu.
 
+A full description of use and calculations may be accessed in-app by tapping the info button.
+
 ## Calculations
 
 All uncertainty calculations are defined by the following three rules:
@@ -43,6 +45,7 @@ The following standard operators are supported (listed in order of decreasing pr
 | Subtraction | `-` |  
 
 The following mathematical functions are supported.
+
 | Logarithms | Trigonometry | Inverse Trig. | Hyperbolic Trig. | Other |  
 | --- | --- | --- | --- | --- |  
 | log | sin | asin | sinh | sqrt |  
@@ -51,7 +54,20 @@ The following mathematical functions are supported.
 
 All trigonometric calculations take place in radians. All mathematical functions must be written with brackets, as `f(a ± b)`.
 
-A full description of use and calculations may be accessed in-app by tapping the info button.
+
+## Example
+In a physics lab experiment involving fluid dynamics, the following expression needed to be evaluated:  
+`sqrt(2 * 9.81 * (0.11 ± 0.002))`  
+By typing that equation (or one without the brackets around the uncertainty) in the provided text-box, the equation preview field displays the (same) correctly formatted equation.
+
+A tap of the "=" button replaces the equation with the following result:  
+`1.4690813456034353 ± 0.013355284960031228`  
+along with the percentage uncertainty (which is useful for intermediate calculations).
+
+As this was the final calculation, the only remaining is to convert this to the standard uncertainty format. A tap of the "FORMAT" button yields:  
+`1.47 ± 0.01`  
+
+The alternative (manual) method involves evaluating the expression using the nominal value (1.4690813456034353), then evaluating the absolute uncertainty by multiplying this result by half of the percentage uncertainty (due to the square root) of 0.11±0.002 (0.9090…%) yielding 0.013355284960031228 - the same result.
 
 ## Authors
 
