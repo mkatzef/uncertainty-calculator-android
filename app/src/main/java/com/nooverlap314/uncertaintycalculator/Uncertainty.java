@@ -81,8 +81,9 @@ class Uncertainty extends Number{
 		else {
 			double magnitude = Math.log10(Math.abs(nominalValue));
 			nomDP = (int) Math.ceil(magnitude);
-			if (magnitude == nomDP) //the border cases (0.1, 1, 10) should fall in the next bucket
+			if (magnitude == nomDP) { //the border cases (0.1, 1, 10) should fall in the next bucket
 				nomDP++;
+			}
 		}
 		
 		int absDP;
@@ -90,9 +91,7 @@ class Uncertainty extends Number{
 			return nominalValue + " \u00B1 0";
 		}else{
 			double magnitude = Math.log10(Math.abs(absoluteUncertainty));
-			absDP = (int) Math.ceil(magnitude);
-			if (magnitude == absDP) //the border cases (0.1, 1, 10) should fall in the next bucket
-				absDP++;
+			absDP = (int) Math.floor(magnitude) + 1;
 		}
 		
 		absBD = absBD.round(new MathContext(1));

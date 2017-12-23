@@ -26,35 +26,31 @@ class UMath {
 			if (value.doubleValue() == 0) {
 				message = "0";
 			} else {
-				
 				BigDecimal nomBD = new BigDecimal(value.doubleValue());
 				nomBD = nomBD.round(new MathContext(4));
 				
 				int nomDP;
 				double magnitude = Math.log10(Math.abs(nomBD.doubleValue()));
-				nomDP = (int) Math.ceil(magnitude);
-				if (magnitude == nomDP) //the border cases (0.1, 1, 10) should fall in the next bucket
-					nomDP++;
-				
-				int exponent;
-				
-				if (nomDP > 0) {
-					exponent = nomDP - ((nomDP-1)%3)-1;
-				} else {
-					exponent = nomDP - ((nomDP-1)%3)-4;
+				// position of most significant digit wrt decimal point (eg: 3.2 has 3 in position 1, and 2 in position 0)
+				nomDP = (int) Math.floor(magnitude) + 1;
+
+				int exponent = nomDP - ((nomDP - 1) % 3) - 1;
+				if (nomDP <= 0) {
+					exponent -= 3;
 				}
-				
-				if (nomDP < 0 && (((nomDP-1) % 3) == 0))
+
+				// nominal value purely decimal, and on boundary
+				if (nomDP < 0 && (((nomDP - 1) % 3) == 0)) {
 					exponent += 3;
+				}
 				
 				if (exponent != 0) {
 					nomBD = nomBD.multiply(new BigDecimal(Math.pow(10, -exponent)));
-					
 					nomBD = nomBD.round(new MathContext(4));
-					
 					message = nomBD.toPlainString() + " E" + exponent;
-				} else
+				} else {
 					message = nomBD.toPlainString();
+				}
 			}
 		}
 

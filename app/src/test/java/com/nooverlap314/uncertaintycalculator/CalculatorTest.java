@@ -9,21 +9,80 @@ import org.junit.Test;
 public class CalculatorTest {
 
 	private String testString;
-	private double tolerance = 0.0000000000001;
+	private double tolerance = 1e-13;
 	
 	@Before
 	public void initialize() {
 		testString = "-a+b/-c";
 	}
-	
+
 	@Test
 	public void testGetOperators() throws Exception {
+		testString = "a+b-c/d*f^g";
 		ArrayList<String> result = Calculator.getOperators(testString);
+		assertEquals(5, result.size());
+		assertEquals("+", result.get(0));
+		assertEquals("-", result.get(1));
+		assertEquals("/", result.get(2));
+		assertEquals("*", result.get(3));
+		assertEquals("^", result.get(4));
+
+		testString = "a+(b-c/d*f^g)";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("+", result.get(0));
+
+		testString = "-a+(b-c/d*f^g)";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("+", result.get(0));
+
+		testString = "+a+(b-c/d*f^g)";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("+", result.get(0));
+	}
+
+
+	@Test
+	public void testGetOperators_Special() throws Exception {
+		testString = "sin(a)";
+		ArrayList<String> result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("sin", result.get(0));
+
+		testString = "log(a)";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("log", result.get(0));
+
+		testString = "exp(a)";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("exp", result.get(0));
+
+		testString = "exp((a))";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("exp", result.get(0));
+
+		testString = "exp(cos(a))";
+		result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
+		assertEquals("exp", result.get(0));
+	}
+
+
+	@Test
+	public void testGetOperators_Implicit() throws Exception {
+		ArrayList<String> result = Calculator.getOperators(testString);
+		assertEquals(2, result.size());
 		assertEquals("+", result.get(0));
 		assertEquals("/", result.get(1));
 
         testString = "2(A)";
         result = Calculator.getOperators(testString);
+		assertEquals(1, result.size());
         assertEquals("*", result.get(0));
 
 		String eqn = "(1(1))";
@@ -32,38 +91,70 @@ public class CalculatorTest {
 
 		eqn = "1(1)";
 		result = Calculator.getOperators(eqn);
+		assertEquals(1, result.size());
 		assertEquals("*", result.get(0));
 	}
-	
+
+
+	public void testGetOperators_Mixed() throws Exception {
+		testString = "sin(a)cos(b)";
+		ArrayList<String> result = Calculator.getOperators(testString);
+		assertEquals(3, result.size());
+		assertEquals("sin", result.get(0));
+		assertEquals("*", result.get(1));
+		assertEquals("cos", result.get(2));
+
+		testString = "(sin(a))cos(b)";
+		result = Calculator.getOperators(testString);
+		assertEquals(2, result.size());
+		assertEquals("*", result.get(0));
+		assertEquals("cos", result.get(1));
+
+		testString = "(sin(a))cos(b)-exp(1^2)^3";
+		result = Calculator.getOperators(testString);
+		assertEquals(5, result.size());
+		assertEquals("*", result.get(0));
+		assertEquals("cos", result.get(1));
+		assertEquals("-", result.get(2));
+		assertEquals("exp", result.get(3));
+		assertEquals("^", result.get(4));
+	}
+
 	
 	@Test
-	public void testGetOperands() { //ensure "log(" and ")" are part of the operand.
+	public void testGetOperands() {
 		ArrayList<String> result = Calculator.getOperands(testString);
+		assertEquals(3, result.size());
 		assertEquals("-a", result.get(0));
 		assertEquals("b", result.get(1));
 		assertEquals("-c", result.get(2));
 
         testString = "2(A)";
         result = Calculator.getOperands(testString);
+		assertEquals(2, result.size());
         assertEquals("2", result.get(0));
         assertEquals("A", result.get(1));
 
 		String eqn = "(1(1))";
 		result = Calculator.getOperands(eqn);
+		assertEquals(1, result.size());
 		assertEquals("1(1)", result.get(0));
 
 		eqn = "1(1)";
 		result = Calculator.getOperands(eqn);
+		assertEquals(2, result.size());
 		assertEquals("1", result.get(0));
 		assertEquals("1", result.get(1));
 
 		eqn = "1/-1";
 		result = Calculator.getOperands(eqn);
+		assertEquals(2, result.size());
 		assertEquals("1", result.get(0));
 		assertEquals("-1", result.get(1));
 
 		eqn = "1/+1";
 		result = Calculator.getOperands(eqn);
+		assertEquals(2, result.size());
 		assertEquals("1", result.get(0));
 		assertEquals("1", result.get(1));
 	}
@@ -180,11 +271,6 @@ public class CalculatorTest {
 		assertEquals(0, result.doubleValue(), tolerance);
 		//assertEquals(1, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
-		eqn = "1±2";
-		result = Calculator.equationProcessor(eqn);
-		//System.out.println("Input:\t" + eqn);
-		//System.out.println("Output:\t" + result);
-		
 		eqn = "-log(10±1)";
 		result = Calculator.equationProcessor(eqn);
 		assertEquals(-1, result.doubleValue(), tolerance);
@@ -257,7 +343,6 @@ public class CalculatorTest {
 		result = Calculator.equationProcessor(eqn);
 		assertEquals(0.5, (result).doubleValue(), tolerance);
 		assertEquals(0.25, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
-
 	}
 	
 	
@@ -322,13 +407,8 @@ public class CalculatorTest {
 
 		eqn = "1 / - {Infinity} \u00B1 NaN";
 		assertEquals("$1/{(-{Infinity})±{NaN}}$", Calculator.toFormula(eqn));
-/**
-        eqn = "1 / (2A)";
-        assertEquals("$1/{2*A}$", Calculator.toFormula(eqn));
-**/
-        eqn = "sqrt(2*9.81*(0.11\u00B10.002))"; //actual lab
-		//System.out.println(Calculator.toFormula(eqn));
-		//System.out.println(Calculator.equationProcessor(eqn));
-	}
 
+        eqn = "1 / (2(A))";
+        assertEquals("$1/{2*A}$", Calculator.toFormula(eqn));
+	}
 }

@@ -364,5 +364,54 @@ public class UMathTest {
 		
 		test1 = 10.01;
 		assertEquals("10.01", UMath.formattedNumber(test1));
+
+		test1 = 0.001;
+		assertEquals("1.000 E-3", UMath.formattedNumber(test1));
+	}
+
+	@Test
+	public void testFormattedNumber_Limits() {
+		Double test = 1E306;
+		assertEquals("1.000 E306", UMath.formattedNumber(test));
+
+		test = 1E307;
+		assertEquals("10.00 E306", UMath.formattedNumber(test));
+
+		test = 1.5E308;
+		assertEquals("150.0 E306", UMath.formattedNumber(test));
+
+		// Known to fail due to internal shifting
+		//test = 1.7976E308;
+		//assertEquals("179.8 E306", UMath.formattedNumber(test));
+
+		test = 1.2345E297;
+		assertEquals("1.235 E297", UMath.formattedNumber(test));
+
+		test = 1.2345E298;
+		assertEquals("12.35 E297", UMath.formattedNumber(test));
+
+		test = 1.2345E299;
+		assertEquals("123.5 E297", UMath.formattedNumber(test));
+
+		// Known to fail, similar reason to above. Limit set to 1E299
+		//test = 1.2345E300;
+		//assertEquals("1.235 E300", UMath.formattedNumber(test));
+
+
+		// Known to fail due to big decimal's initialization
+		//test = 2.4705E-324;
+		//assertEquals("2.471 E-324", UMath.formattedNumber(test));
+		//test = 1E-307;
+		//assertEquals("1.000 E-307", UMath.formattedNumber(test));
+
+		test = 1.2345E-297;
+		assertEquals("1.235 E-297", UMath.formattedNumber(test));
+
+		test = 1.2345E-298;
+		assertEquals("123.5 E-300", UMath.formattedNumber(test));
+
+		// Known to fail, similar reason to above. Limit set to 1E-298
+		//test = 1.2345E-299;
+		//assertEquals("12.35 E-300", UMath.formattedNumber(test));
 	}
 }

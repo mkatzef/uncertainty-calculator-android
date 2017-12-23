@@ -22,6 +22,9 @@ import java.util.HashMap;
  * The main (calculator) activity
  */
 public class MyActivity extends AppCompatActivity {
+	private static double MAX_NOMINAL_VALUE = 1E299;
+	private static double MIN_NOMINAL_VALUE = 1E-298;
+
     private static Number currentResult;
     private static HashMap<Character, Number> savedResults;
     private static String[] listEntries;
@@ -44,20 +47,31 @@ public class MyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_my);
+        initListEntries();
 
+        if (savedResults == null) {
+            savedResults = new HashMap<>();
+        }
+        adapter = new ArrayAdapter<>(this, R.layout.list_view_layout, R.id.list_view_text_views, listEntries);
+
+        initDialogue();
+        initEditText();
+        setResultViewContents(getResources().getString(R.string.preview_placeholder));
+
+        super.onCreate(savedInstanceState);
+    }
+
+    private void initListEntries() {
         listEntries = new String[25];
         for (int i = 0; i < 25; i++) {
-            char slotChar = (char) ('A' + i);
+            char slotChar = (char) (i + 'A');
             if (slotChar > 'D')
                 slotChar++;
             listEntries[i] = slotChar + getResources().getString(R.string.list_letter_number_separator) + "Empty";
         }
+    }
 
-        if (savedResults == null)
-            savedResults = new HashMap<>();
-
-        adapter = new ArrayAdapter<>(this, R.layout.list_view_layout, R.id.list_view_text_views, listEntries);
-
+    private void initDialogue() {
         dialogueType = 0;
 
         dialogBuilder = new AlertDialog.Builder(this);
@@ -71,7 +85,10 @@ public class MyActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+
+    private void initEditText() {
         final EditText editText = (EditText) findViewById(R.id.equation_entry);
         editText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int actionId, KeyEvent event) {
@@ -95,57 +112,58 @@ public class MyActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().equals("")) {
-                    setView(getResources().getString(R.string.preview_placeholder));
-                } else {
-                    String changed = s.toString();
-                    for(char savedResultSymbol : savedResults.keySet()) {
-                        String letterAsString = Character.toString(savedResultSymbol);
-                        String replacementAsString = "(" + savedResultSymbol + ")";
-                        changed = changed.replaceAll(letterAsString, replacementAsString);
-                    }
-
-                    //show es and pis in the way they will be considered
-                    changed = changed.replaceAll("\u03C0", "(\u03C0)");
-                    changed = changed.replaceAll("e^", "EXP");
-                    changed = changed.replaceAll("exp", "EXP"); // This is not the regex you were looking for
-                    changed = changed.replaceAll("e", "(e)");
-                    changed = changed.replaceAll("EXP", "exp");
-
-                    //Check has no unrecognised characters
-                    if (Calculator.isOnlyValidCharacters(changed))
-                        try {
-                            setView(Calculator.toFormula(changed));
-                        } catch (Exception e) {} //Change nothing if something went wrong
-                    else
-                        setView("Unrecognised character(s)");
-                }
+                afterTextChangedHandler(s.toString());
             }
         });
-
-        setView(getResources().getString(R.string.preview_placeholder));
-
-        super.onCreate(savedInstanceState);
     }
 
+    private void afterTextChangedHandler(String newString) {
+        if (newString.equals("")) {
+            setResultViewContents(getResources().getString(R.string.preview_placeholder));
+        } else {
+            String enteredEquation = substituteVariablesReadable(newString);
+
+            //Check has no unrecognised characters
+            if (Calculator.isOnlyValidCharacters(enteredEquation)) {
+                try {
+                    setResultViewContents(Calculator.toFormula(enteredEquation));
+                } catch (Exception e) {} //Change nothing if something went wrong
+            } else {
+                setResultViewContents("Unrecognised character(s)");
+            }
+        }
+    }
+
+    private String substituteVariablesReadable(String formula) {
+        for(char savedResultSymbol : savedResults.keySet()) {
+            String letterAsString = Character.toString(savedResultSymbol);
+            String replacementAsString = "(" + savedResultSymbol + ")";
+            formula = formula.replaceAll(letterAsString, replacementAsString);
+        }
+
+        return formula;
+    }
+
+	private String substituteVariablesNumeric(String formula) {
+		for(char savedResultSymbol : savedResults.keySet()) {
+			String letterAsString = Character.toString(savedResultSymbol);
+			String replacementAsString = "(" + savedResults.get(savedResultSymbol) + ")";
+			formula = formula.replaceAll(letterAsString, replacementAsString);
+		}
+
+		return formula;
+	}
 
     @Override
     protected void onStart() {
-        if (savedResults != null) {
-            for (char varName : savedResults.keySet()) { //copy/pasted
-                int pos = varName - 'A';
-                if (pos > ('D' - 'A'))
-                    pos--;
-                listEntries[pos] = Character.toString(varName) + getResources().getString(R.string.list_letter_number_separator) + UMath.formattedNumber(savedResults.get(varName));
-            }
-            adapter.notifyDataSetChanged();
-        } else
+        if (savedResults == null) {
             savedResults = new HashMap<>(); //Lost data, but won't crash
+        } else {
+            populateSaveEntryList();
+        }
 
         if (inputText != null) {
-            EditText editText = (EditText) findViewById(R.id.equation_entry);
-            editText.setText(inputText);
-            editText.setSelection(inputText.length());
+            populateInputTextEdit();
         }
 
         // Just do the webview setup once
@@ -155,12 +173,31 @@ public class MyActivity extends AppCompatActivity {
         webView.setBackgroundColor(0x00FFFFFF);
 
         if (outputText != null) {
-            setView(outputText);
+            setResultViewContents(outputText);
         }
 
         super.onStart();
     }
 
+    private void populateSaveEntryList() {
+        for (char varName : savedResults.keySet()) {
+            int listIndex = varName;
+            if (listIndex > 'D') { // account for missing 'E'
+                listIndex--;
+            }
+            listIndex -= 'A';
+            listEntries[listIndex] = Character.toString(varName) +
+                    getResources().getString(R.string.list_letter_number_separator) +
+                    UMath.formattedNumber(savedResults.get(varName));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void populateInputTextEdit() {
+        EditText editText = (EditText) findViewById(R.id.equation_entry);
+        editText.setText(inputText);
+        editText.setSelection(inputText.length());
+    }
 
     @Override
     protected void onStop() {
@@ -195,18 +232,7 @@ public class MyActivity extends AppCompatActivity {
         String message = editText.getText().toString();
 
         if (Calculator.isOnlyValidCharacters(message)) {
-            for (char savedResultSymbol : savedResults.keySet()) {
-                String letterAsString = Character.toString(savedResultSymbol);
-                String replacementAsString = "(" + savedResults.get(savedResultSymbol) + ")";
-                message = message.replaceAll(letterAsString, replacementAsString);
-            }
-
-            message = message.replaceAll("\\s", ""); //double up
-            message = message.replaceAll("\u03C0", "(" + Math.PI + ")");
-            message = message.replaceAll("e^", "EXP");
-            message = message.replaceAll("exp", "EXP"); // This is not the regex you were looking for
-            message = message.replaceAll("e", "(" + Math.E + ")");
-            message = message.replaceAll("EXP", "exp");
+            message = substituteVariablesNumeric(message);
 
             try {
                 currentResult = Calculator.equationProcessor(message);
@@ -223,7 +249,7 @@ public class MyActivity extends AppCompatActivity {
         }
 
         outputText = message;
-        setView(message);
+        setResultViewContents(message);
     }
 
 
@@ -231,13 +257,38 @@ public class MyActivity extends AppCompatActivity {
      * Called when the user clicks the Format button
      */
     public void formatResult(View view) {
-        if (currentResult != null) {
-            if (!(currentResult.toString().contains("NaN") || currentResult.toString().contains("Infinity"))) {
-                outputText = UMath.formattedNumber(currentResult); //Will be treated as an equation
-                setView(outputText);
-            }
-        }
+		if (isReasonableNumber(currentResult)) {
+			outputText = UMath.formattedNumber(currentResult); //Will be treated as an equation
+			setResultViewContents(outputText);
+		} else {
+			setResultViewContents("Result could not be formatted");
+		}
     }
+
+	private boolean isReasonableNumber(Number number) {
+		if (number == null) {
+			return false;
+		}
+
+		if (Math.abs(number.doubleValue()) > MAX_NOMINAL_VALUE) {
+			return false;
+		}
+
+		if (Math.abs(number.doubleValue()) < MIN_NOMINAL_VALUE) {
+			return false;
+		}
+
+		String numberString = number.toString();
+		if (numberString.contains("NaN")) {
+			return false;
+		}
+
+		if (numberString.contains("Infinity")) {
+			return false;
+		}
+
+		return true;
+	}
 
 
     private void showSlotDialogue(String prompt) {
@@ -305,12 +356,12 @@ public class MyActivity extends AppCompatActivity {
      */
     public void savePrompt(View view) {
         if (currentResult != null) {
-            if (currentResult.toString().contains("Infinity") || currentResult.toString().contains("NaN")) {
-                //toast you can't save that type of result
-            } else {
+            if (isReasonableNumber(currentResult)) {
                 dialogueType = 0;
                 showSlotDialogue(getResources().getString(R.string.dialog_save_title));
-            }
+            } else {
+				setResultViewContents("Result could not be saved");
+			}
         }
     }
 
@@ -331,10 +382,11 @@ public class MyActivity extends AppCompatActivity {
      * Saves the current result in the selected slot. This should only be called by the
      * dialogBuilder object.
      */
-    private void saveResult(int selected) {
-
-        char currentLetter = listEntries[selected].charAt(0);
-        listEntries[selected] = Character.toString(currentLetter) + getResources().getString(R.string.list_letter_number_separator) + UMath.formattedNumber(currentResult);
+    private void saveResult(int index) {
+        char currentLetter = listEntries[index].charAt(0);
+        listEntries[index] = Character.toString(currentLetter) +
+                getResources().getString(R.string.list_letter_number_separator) +
+                UMath.formattedNumber(currentResult);
 
         savedResults.put(currentLetter, currentResult);
         adapter.notifyDataSetChanged();
@@ -349,7 +401,7 @@ public class MyActivity extends AppCompatActivity {
     }
 
 
-    public void setView(String input){
+    public void setResultViewContents(String input){
         WebView webView = (WebView)findViewById(R.id.main_activity_webview);
 
         String path="file:///android_asset/JQMath/";

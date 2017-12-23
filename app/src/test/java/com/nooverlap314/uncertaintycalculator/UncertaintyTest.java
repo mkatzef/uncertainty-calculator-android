@@ -93,5 +93,11 @@ public class UncertaintyTest {
 		
 		test = new Uncertainty(0.0002, 0.0009);
 		assertEquals("(200 \u00B1 900) E-6", test.toStringFormatted());
+
+		test = new Uncertainty(0.0014, 0.001);
+		assertEquals("(1 \u00B1 1) E-3", test.toStringFormatted());
+
+		test = new Uncertainty(0.0015, 0.001);
+		assertEquals("(2 \u00B1 1) E-3", test.toStringFormatted());
 	}
 }

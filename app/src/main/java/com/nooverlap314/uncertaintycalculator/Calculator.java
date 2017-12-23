@@ -10,8 +10,9 @@ import java.util.Arrays;
  * @date 17 November 2016
  */
 class Calculator {
-	
-	private static final ArrayList<String> operators = new ArrayList<>(Arrays.asList("\u00B1", "^",
+	private static final String SYMBOL_PI = "\u03C0";
+	private static final String SYMBOL_PM = "\u00B1";
+	private static final ArrayList<String> operators = new ArrayList<>(Arrays.asList(SYMBOL_PM, "^",
 			"/", "*", "+", "-"));
 	private static final ArrayList<String> specialOperators = new ArrayList<>(Arrays.asList("sqrt",
 			"sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "log", "ln", "exp"));
@@ -198,7 +199,7 @@ class Calculator {
 	 * @throws Exception in the event of anything at all going wrong.
      */
 	static Number equationProcessor(String input) throws Exception{
-		input = input.replaceAll("\\s","");
+		input = replaceMathSymbolsNumeric(input);
 		
 		input = evenBrackets(input);
 		
@@ -385,7 +386,7 @@ class Calculator {
 					Number operand2 = numberOperands.get(operatorIndex + 1);
 					
 					switch (operator) {
-					case "\u00B1":
+					case SYMBOL_PM:
 						intermediateResult = new Uncertainty((double) operand1, (double) operand2);
 						break;
 					case "^":
@@ -426,7 +427,7 @@ class Calculator {
 	 * @return true if the equation is made up of symbols that are recognised in this calculator.
      */
 	static boolean isOnlyValidCharacters(String input) {
-		String validCharacters = "0-9A-Za-z.)(\u03C0 ";
+		String validCharacters = "0-9A-Za-z.)( " + SYMBOL_PI;
         for (String operator : operators)
             validCharacters += operator;
 
@@ -444,23 +445,45 @@ class Calculator {
 	 */
 	static String toFormula(String input) throws Exception {
 		String result = "$";
-		
-		input = evenBrackets(input);
-		
+
 		if (input.length() > 0) {
-			input = input.replaceAll("\\s", "");
-			input = input.replaceAll("exp", "e^");
+			input = replaceMathSymbolsReadable(input);
+			input = evenBrackets(input);
 
 			String theEquation = formulaFromString(input);
 			int length = theEquation.length();
-			if ((length >= 1) && (theEquation.charAt(0) == '(') && (theEquation.charAt(length - 1) == ')'))
+			if ((length > 0) && (theEquation.charAt(0) == '(') && (theEquation.charAt(length - 1) == ')')) {
 				theEquation = theEquation.substring(1, length - 1);
+			}
 			result += theEquation;
 		}
 		
 		result += "$";
 		
 		return result;
+	}
+
+	// Replaces es and pis in the way they will be considered, without losing readability
+	private static String replaceMathSymbolsReadable(String input) {
+		input = input.replaceAll("\\s", "");
+		input = input.replaceAll(SYMBOL_PI, "(" + SYMBOL_PI + ")");
+
+		input = input.replaceAll("exp", "e^");
+
+		return input;
+	}
+
+	// Replaces es and pis with their values
+	private static String replaceMathSymbolsNumeric(String input) {
+		input = input.replaceAll("\\s", "");
+		input = input.replaceAll(SYMBOL_PI, "(" + Math.PI + ")");
+
+		input = input.replaceAll("e^", "EXP");
+		input = input.replaceAll("exp", "EXP");
+		input = input.replaceAll("e", "(" + Math.E + ")");
+		input = input.replaceAll("EXP", "exp");
+
+		return input;
 	}
 
 
