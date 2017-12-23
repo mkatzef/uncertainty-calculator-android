@@ -270,11 +270,13 @@ public class MyActivity extends AppCompatActivity {
 			return false;
 		}
 
-		if (Math.abs(number.doubleValue()) > MAX_NOMINAL_VALUE) {
+		double nominalValue = Math.abs(number.doubleValue());
+
+		if (nominalValue > MAX_NOMINAL_VALUE) {
 			return false;
 		}
 
-		if (Math.abs(number.doubleValue()) < MIN_NOMINAL_VALUE) {
+		if (nominalValue != 0 && nominalValue < MIN_NOMINAL_VALUE) {
 			return false;
 		}
 
