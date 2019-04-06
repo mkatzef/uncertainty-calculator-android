@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Class for dealing with (string) equations.
+ * Class for dealing with (string) expressions.
  *
  * @author Marc Katzef
  * @date 17 November 2016
@@ -18,10 +18,10 @@ class Calculator {
 			"sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh", "log", "ln", "exp"));
 
 	/**
-	 * Parses an equation to find the operators acting on the highest level of the equation
+	 * Parses an expression to find the operators acting on the highest level
 	 * (everything happening between operands that are outside of brackets).
 	 * @param input - a string made up of only brackets, operators, and numbers
-	 * @return presentOperators - the array-list of operators at the highest level of the equation.
+	 * @return presentOperators - the array-list of operators at the highest level of the expression.
 	 * @throws Exception - if anything goes wrong (infinite loop, invalid number etc.)
      */
 	static ArrayList<String> getOperators(String input) throws Exception{
@@ -93,10 +93,9 @@ class Calculator {
 
 
 	/**
-	 * Parses an equation to find the operands to match get operators. Made to mirror each other.
-	 * Separated to make more manageable. would be faster if combined.
+	 * Parses an expression to find the operands to match get operators.
 	 * @param input - a string made up of only brackets, operators, and numbers
-	 * @return presentOperands - the array-list of operators at the highest level of the equation.
+	 * @return presentOperands - the array-list of operators at the highest level of the expression.
 	 */
 	static ArrayList<String> getOperands(String input) {
 		ArrayList<String> presentOperands = new ArrayList<>();
@@ -169,7 +168,7 @@ class Calculator {
 	 * @param input - a string made up of only brackets, operators, and numbers.
 	 * @return the modified form of input.
      */
-	private static String evenBrackets(String input) {
+	private static String balanceBrackets(String input) {
 		int openBrackets = 0;
 		int closeBrackets = 0;
 		
@@ -193,17 +192,17 @@ class Calculator {
 
 	/**
 	 * Performs actions that are required only once before the recursive function (remove spaces,
-	 * balance brackets) then hand it over to calculateFromString.
+	 * balance brackets) then hand it over to the helper function evalString.
 	 * @param input - a string made up of only brackets, operators, numbers, and spaces.
-	 * @return the result of the equation.
+	 * @return the Number result of the expression.
 	 * @throws Exception in the event of anything at all going wrong.
      */
-	static Number equationProcessor(String input) throws Exception{
+	static Number evalRawString(String input) throws Exception{
 		input = replaceMathSymbolsNumeric(input);
 		
-		input = evenBrackets(input);
+		input = balanceBrackets(input);
 		
-		return calculateFromString(input);
+		return evalString(input);
 	}
 
 
@@ -211,11 +210,12 @@ class Calculator {
 	 * Finds all operands and operators, sends all operands for the same treatment. At lowest level,
 	 * return the lone operand, or the result of [operand][operator][operand]. Works its way back up
 	 * to the overall result.
+	 * NOTE: this function expects balanced brackets and no symbolic operands.
 	 * @param input - a string made up of only brackets, operators, and numbers.
-	 * @return the result of the equation.
+	 * @return the Number value of the expression.
 	 * @throws Exception in the event of anything at all going wrong.
      */
-	private static Number calculateFromString(String input) throws Exception {
+	private static Number evalString(String input) throws Exception {
 		final String reference = input;
 		
 		Number result;
@@ -245,9 +245,9 @@ class Calculator {
 			
 			if (input.charAt(0) == '-') { // Negative operand
 				input = input.substring(1);
-				result = UMath.subtract(0, calculateFromString(input));
+				result = UMath.subtract(0, evalString(input));
 			} else if ((input.charAt(0) == '(') && (input.charAt(input.length() - 1) == ')')) {
-					result = calculateFromString(input.substring(1, input.length() - 1));
+					result = evalString(input.substring(1, input.length() - 1));
 				
 			} else {
 				boolean opFound = false;
@@ -283,7 +283,7 @@ class Calculator {
 					if (operand.equals(reference))
 						throw new Exception("Would have looped");
 					
-					result = calculateFromString(operand);
+					result = evalString(operand);
 				} else {
 					try {
 						result = Double.parseDouble(operand);
@@ -299,7 +299,7 @@ class Calculator {
 			ArrayList<Number> numberOperands = new ArrayList<>(); //must be same length
 			
 			for (int j = 0; j < currentOperands.size(); j++) {
-				numberOperands.add(calculateFromString(currentOperands.get(j)));
+				numberOperands.add(evalString(currentOperands.get(j)));
 			}
 			
 			Number intermediateResult;
@@ -422,9 +422,9 @@ class Calculator {
 
 
 	/**
-	 * Checks to see if an equation is made up of only recognised characters.
-	 * @param input any string equation.
-	 * @return true if the equation is made up of symbols that are recognised in this calculator.
+	 * Checks to see if an expression is made up of only recognised characters.
+	 * @param input any string expression.
+	 * @return true if the expression is made up of symbols that are recognised in this calculator.
      */
 	static boolean isOnlyValidCharacters(String input) {
 		String validCharacters = "0-9A-Za-z.)( " + SYMBOL_PI;
@@ -436,11 +436,11 @@ class Calculator {
 
 
 	/**
-	 * The algebraic analog of equationProcessor.
-	 * Processes equation to show the equation preview with the same order of operations as what the
+	 * The algebraic analog of evalRawString.
+	 * Processes expression to show the expression preview with the same order of operations as what the
 	 * calculator will carry out.
 	 * @param input - a string made up of only brackets, operators, and numbers.
-	 * @return the string corresponding with the formatted preview of the equation.
+	 * @return the string corresponding with the formatted preview of the expression.
 	 * @throws Exception in the event of anything at all going wrong.
 	 */
 	static String toFormula(String input) throws Exception {
@@ -448,14 +448,14 @@ class Calculator {
 
 		if (input.length() > 0) {
 			input = replaceMathSymbolsReadable(input);
-			input = evenBrackets(input);
+			input = balanceBrackets(input);
 
-			String theEquation = formulaFromString(input);
-			int length = theEquation.length();
-			if ((length > 0) && (theEquation.charAt(0) == '(') && (theEquation.charAt(length - 1) == ')')) {
-				theEquation = theEquation.substring(1, length - 1);
+			String formattedExpression = formulaFromString(input);
+			int length = formattedExpression.length();
+			if ((length > 0) && (formattedExpression.charAt(0) == '(') && (formattedExpression.charAt(length - 1) == ')')) {
+				formattedExpression = formattedExpression.substring(1, length - 1);
 			}
-			result += theEquation;
+			result += formattedExpression;
 		}
 		
 		result += "$";
@@ -487,24 +487,13 @@ class Calculator {
 	}
 
 
-	/** SHOULD BE USED
-	public static boolean containsOperator(String input) {
-		boolean operatorFound = false;
-		for (String operator : operators) {
-			if (input.contains(operator))
-					operatorFound = true;
-		}
-		return operatorFound;
-	}**/
-
-
 	/**
-	 * The algebraic analog of calculateFromString.
+	 * The algebraic analog of evalString.
 	 * Finds all operands and operators, sends all operands for the same treatment. At lowest level,
 	 * return the lone operand, or the bracketed form of [operand][operator][operand]. Works its way
 	 * back up to the overall (fully bracketed) string.
 	 * @param input - a string made up of only brackets, operators, and numbers.
-	 * @return the result of the equation.
+	 * @return a jqMath-formatted String representation of the expression.
 	 * @throws Exception in the event of anything at all going wrong.
 	 */
 	private static String formulaFromString(String input) throws Exception {

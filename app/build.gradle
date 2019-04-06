@@ -9,14 +9,14 @@ android {
             storePassword 'TDNFPZN8M'
         }
     }
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "24.0.0"
     defaultConfig {
         applicationId "com.nooverlap314.uncertaintycalculator"
         minSdkVersion 11
-        targetSdkVersion 25
-        versionCode 3
-        versionName "1.0.2"
+        targetSdkVersion 26
+        versionCode 4
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

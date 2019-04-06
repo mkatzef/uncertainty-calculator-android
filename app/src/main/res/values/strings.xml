@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Uncertainty Calculator</string>
     <string name="action_settings">Settings</string>
-    <string name="edit_message">Enter an equation</string>
+    <string name="edit_message">Enter an expression</string>
     <string name="button_evaluate">=</string>
     <string name="button_save">Save</string>
     <string name="button_format">Format</string>
@@ -9,8 +9,8 @@
     <string name="button_pi">\u03C0</string>
     <string name="button_e">e</string>
     <string name="button_pm">\u00B1</string>
-    <string name="preview_placeholder">Equation Preview</string>
-    <string name="result_message_failed">Couldn\'t parse that equation</string>
+    <string name="preview_placeholder">Expression Preview</string>
+    <string name="result_message_failed">Couldn\'t parse that expression</string>
     <string name="result_message_argument_failed">Function arguments out of range</string>
     <string name="dialog_save_title">Choose a save slot</string>
     <string name="dialog_insert_title">Choose a result to insert</string>
@@ -55,10 +55,10 @@ uncertainties (numbers of the form: nominal value \u00B1 absolute uncertainty).
 <br/>
 <h2>How-to:</h2>
 <ul style=\"text-align:justify;padding-left:20px;line-height:1.2\">
-	<li>Enter an equation in the text-box. (See the \"Calculations\" section for what can be processed.)</li><br/>
+	<li>Enter an expression in the text-box. (See the \"Calculations\" section for what can be processed.)</li><br/>
 	<li>Ensure that the preview matches the desired expression. (Use more brackets to fine-tune it).</li><br/>
 	<li>Tap the \"=\" button (or, while typing, the enter key on the keyboard) to get a result.
-	If an error is displayed, edit the equation and try again.</li><br/>
+	If an error is displayed, edit the expression and try again.</li><br/>
 	<li>The default result format shows the exact value that will be used in future calculations,
 	and the percentage uncertainty. To see the result in a standardised format, tap the \"FORMAT\" button.</li><br/>
 	<li>To save the result for future calculations, tap the \"SAVE\" button and tap on a slot (free
@@ -66,15 +66,15 @@ uncertainties (numbers of the form: nominal value \u00B1 absolute uncertainty).
 	calculations.</li><br/>
 	<li>To insert a result in later calculations, type in the corresponding upper-case letter of the
 	save slot, or tap the \"SAVED\" button then tap on the desired save slot. This inserts the letter
-	into the equation.</li><br/>
+	into the expression.</li><br/>
 	<li>To use the value of \u03C0 or e, tap the corresponding button. These (also) insert the
-	appropriate letters into the equation.</li>
+	appropriate letters into the expression.</li>
 </ul>
 
 <br/>
 <h2>Calculations:</h2>
 <p style=\"text-align:justify;line-height:1.2\">
-The equation preview field shows exactly how the equation will be interpreted in the calculation.
+The expression preview field shows exactly how the expression will be interpreted in the calculation.
 This involves the following operators in the shown order (a variant of BEDMAS).</p>
 
 <table border="1" align="center">
@@ -147,12 +147,12 @@ too (or the nominal value from the start) doesn\'t fall in the valid domain, an 
 	letter is not given as a save slot.</li><br/>
 	<li>The \"e\" button represents the value, not the function. For exponential calculations, use
 	\"exp(x)\" or \"e^(x)\".</li><br/>
-	<li>To clarify the equation preview, \"sqrt\" and \"exp\" functions are replaced with surds and
+	<li>To clarify the expression preview, \"sqrt\" and \"exp\" functions are replaced with surds and
 	\"e^\"s.</li><br/>
 	<li>The only recognised characters are letters (including \u03C0), numbers, operators, and
 	decimal points.</li><br/>
 	<li>Unbalanced brackets are dealt with by adding opposing brackets to the beginning or end of
-	the entered equation.</li><br/>
+	the entered expression.</li><br/>
 	<li>All space characters are ignored.</li><br/>
 	<li>Imaginary numbers are not dealt with. At all.</li>
 </ul>
@@ -162,10 +162,10 @@ too (or the nominal value from the start) doesn\'t fall in the valid domain, an 
 <p style=\"text-align:justify;line-height:1.2\">
 In a physics lab experiment involving fluid dynamics, the following expression needed to be evaluated:
 <br/><br/>$$sqrt(2*9.81*(0.11\u00B10.002))$$<br/>
-By typing that equation (or one without the brackets around the uncertainty) in the provided text-box,
-the equation preview field displays the following formatted equation:
+By typing that expression (or one without the brackets around the uncertainty) in the provided text-box,
+the expression preview field displays the following formatted expression:
 <br/><br/>$$√((2*9.81)*(0.11±0.002))$$<br/>
-which looks right. A tap of the \"=\" button replaces the equation with the following result:
+which looks right. A tap of the \"=\" button replaces the expression with the following result:
 <br/><br/>$$1.4690813456034353 \u00B1 0.013355284960031228$$<br/>
 along with the percentage uncertainty (which is useful for intermediate calculations). As this was the final
 calculation, the only remaining is to convert this to the standard uncertainty format. A tap of
@@ -179,7 +179,7 @@ same result.
 <br/>
 <hr width=100% height=1px color=#FDA859/>
 <p style=\"text-align:center;font-size:80%\">
-Equation preview powered by <a href=\"http://mathscribe.com/author/jqmath.html\">jqMath</a> - written by Dave Barton<br/><br/>
+Expression preview powered by <a href=\"http://mathscribe.com/author/jqmath.html\">jqMath</a> - written by Dave Barton<br/><br/>
 App icon generated using <a href="https://romannurik.github.io/AndroidAssetStudio/index.html">
 Android Asset Studio</a> - written by Roman Nurik<br/><br/>
 App written by Marc Katzef</p>

@@ -89,7 +89,7 @@ public class MyActivity extends AppCompatActivity {
 
 
     private void initEditText() {
-        final EditText editText = (EditText) findViewById(R.id.equation_entry);
+        final EditText editText = (EditText) findViewById(R.id.expression_entry);
         editText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int actionId, KeyEvent event) {
                 boolean handled = false;
@@ -121,13 +121,13 @@ public class MyActivity extends AppCompatActivity {
         if (newString.equals("")) {
             setResultViewContents(getResources().getString(R.string.preview_placeholder));
         } else {
-            String enteredEquation = substituteVariablesReadable(newString);
+            String enteredExpression = substituteVariablesReadable(newString);
 
             //Check has no unrecognised characters
-            if (Calculator.isOnlyValidCharacters(enteredEquation)) {
+            if (Calculator.isOnlyValidCharacters(enteredExpression)) {
                 try {
-                    setResultViewContents(Calculator.toFormula(enteredEquation));
-                } catch (Exception e) {} //Change nothing if something went wrong
+                    setResultViewContents(Calculator.toFormula(enteredExpression));
+                } catch (Exception e) {} // Change nothing if something went wrong
             } else {
                 setResultViewContents("Unrecognised character(s)");
             }
@@ -194,14 +194,14 @@ public class MyActivity extends AppCompatActivity {
     }
 
     private void populateInputTextEdit() {
-        EditText editText = (EditText) findViewById(R.id.equation_entry);
+        EditText editText = (EditText) findViewById(R.id.expression_entry);
         editText.setText(inputText);
         editText.setSelection(inputText.length());
     }
 
     @Override
     protected void onStop() {
-        EditText editText = (EditText) findViewById(R.id.equation_entry);
+        EditText editText = (EditText) findViewById(R.id.expression_entry);
         inputText = editText.getText().toString();
 
         super.onStop();
@@ -228,14 +228,14 @@ public class MyActivity extends AppCompatActivity {
      * Called when the user clicks the '=' button
      */
     public void evaluate(View view) {
-        EditText editText = (EditText) findViewById(R.id.equation_entry);
+        EditText editText = (EditText) findViewById(R.id.expression_entry);
         String message = editText.getText().toString();
 
         if (Calculator.isOnlyValidCharacters(message)) {
             message = substituteVariablesNumeric(message);
 
             try {
-                currentResult = Calculator.equationProcessor(message);
+                currentResult = Calculator.evalRawString(message);
                 message = currentResult.toString();
                 if (currentResult instanceof Uncertainty)
                     message += "<br/><p style=\"display:inline;font-size:80%\">(\u00B1 " + ((Uncertainty) currentResult).getRatioUncertainty() * 100 + "%)</p>";
@@ -258,7 +258,7 @@ public class MyActivity extends AppCompatActivity {
      */
     public void formatResult(View view) {
 		if (isReasonableNumber(currentResult)) {
-			outputText = UMath.formattedNumber(currentResult); //Will be treated as an equation
+			outputText = UMath.formattedNumber(currentResult); // Will be treated as an expression
 			setResultViewContents(outputText);
 		} else {
 			setResultViewContents("Result could not be formatted");
@@ -304,7 +304,7 @@ public class MyActivity extends AppCompatActivity {
      * Called when the user clicks the uncertainty sign button
      */
     public void insertUnc(View view) {
-        insertInEquation("\u00B1");
+        insertInExpression("\u00B1");
     }
 
 
@@ -312,14 +312,14 @@ public class MyActivity extends AppCompatActivity {
      * Called when the user clicks the pi button
      */
     public void insertPi(View view) {
-        insertInEquation("\u03C0");
+        insertInExpression("\u03C0");
     }
 
     /**
      * Called when the user clicks the pi button
      */
     public void insertE(View view) {
-        insertInEquation("e");
+        insertInExpression("e");
     }
 
 
@@ -327,8 +327,8 @@ public class MyActivity extends AppCompatActivity {
      * Places 'content' where the user has the cursor in the edittext widget, or at the end if it is
      * not being used.
      */
-    private void insertInEquation(String content) {
-        EditText editText = (EditText) findViewById(R.id.equation_entry);
+    private void insertInExpression(String content) {
+        EditText editText = (EditText) findViewById(R.id.expression_entry);
         String message = editText.getText().toString();
 
         int lowerSelection = editText.getSelectionStart();
@@ -396,10 +396,10 @@ public class MyActivity extends AppCompatActivity {
 
 
     /**
-     * Just puts the selected letter into the user's equation at the cursor position.
+     * Inserts the selected letter into the user's expression at the cursor position.
      */
     private void insertPastResult(int selected) {
-        insertInEquation(listEntries[selected].substring(0, 1));
+        insertInExpression(listEntries[selected].substring(0, 1));
     }
 
 

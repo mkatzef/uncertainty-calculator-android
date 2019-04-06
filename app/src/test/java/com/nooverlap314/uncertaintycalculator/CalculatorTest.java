@@ -161,186 +161,186 @@ public class CalculatorTest {
 	
 	
 	@Test
-	public void testEquationProcessor() throws Exception{
+	public void testExpressionProcessor() throws Exception{
 		String eqn = "1";
-		Number result = Calculator.equationProcessor(eqn);
+		Number result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, (double) result, tolerance);
 		
 		eqn = "1±1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, result.doubleValue(), tolerance);
 		assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "1±1/2";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0.5, result.doubleValue(), tolerance);
 		assertEquals(0.5, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "1±(1/2)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, result.doubleValue(), tolerance);
 		assertEquals(0.5, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "1±1+1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(2.0, result.doubleValue(), tolerance);
 		assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "1±1+1±1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(2.0, result.doubleValue(), tolerance);
 		assertEquals(2.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "((1-1)±1)+(1+1)±(1*2)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(2.0, result.doubleValue(), tolerance);
 		assertEquals(3.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "-1±1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-1.0, result.doubleValue(), tolerance);
 		assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "-(1±1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-1.0, result.doubleValue(), tolerance);
 		assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "(1±1)/(1±0)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, result.doubleValue(), tolerance);
 		assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "1/-1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-1.0, result.doubleValue(), tolerance);
 
 		eqn = "1/+1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, result.doubleValue(), tolerance);
 
 		eqn = "log(10±90)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, result.doubleValue(), tolerance);
 		assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
 		eqn = "exp(ln(3.2))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(3.2, (double) result, tolerance);
 		
 		eqn = "log(1) + ln(1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0.0, (double) result, tolerance);
 		
 		eqn = "asin(sin(1.5±0))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.5, result.doubleValue(), tolerance);
 		//assertEquals(1.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "(1±1)(1±1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1.0, result.doubleValue(), tolerance);
 		assertEquals(2.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "2(1±1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(2.0, result.doubleValue(), tolerance);
 		assertEquals(2.0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "(exp(ln(2(1±0.5))))^2";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(4.0, result.doubleValue(), tolerance);
 
 		eqn = "0.0000000000145±0.000000000005 * 2";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0.000000000029, result.doubleValue(), tolerance);
 		assertEquals(0.00000000001, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "0.0000000000145±0.000000000005 * 200000000000";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(2.9, result.doubleValue(), tolerance);
 		assertEquals(1, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
 		eqn = "(1±1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1, result.doubleValue(), tolerance);
 		//assertEquals(1, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
 		eqn = "sin((0±1))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0, result.doubleValue(), tolerance);
 		//assertEquals(1, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
 		eqn = "-log(10±1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-1, result.doubleValue(), tolerance);
 		//assertEquals(1, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
 		eqn = "log(1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0, (result).doubleValue(), tolerance);
 		
 		eqn = "(log(1))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0, (result).doubleValue(), tolerance);
 		
 		eqn = "((1))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1, (result).doubleValue(), tolerance);
 		
 		eqn = "((-1))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-1, (result).doubleValue(), tolerance);
 		
 		eqn = "1(1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1, (result).doubleValue(), tolerance);
 
 		eqn = "(1(1))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1, (result).doubleValue(), tolerance);
 		
 		eqn = "(1)2";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(2, (result).doubleValue(), tolerance);
 		
 		eqn = "17.2E3±8201.3E1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(17200, (result).doubleValue(), tolerance);
 		assertEquals(82013, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 		
 		eqn = "17.2E3±8201.3E-1";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(17200, (result).doubleValue(), tolerance);
 		assertEquals(820.13, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "log(10\u00B10)/sqrt(4)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0.5, (result).doubleValue(), tolerance);
 		assertEquals(0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "log(10\u00B10)/sqrt(4)*log(100\u00B10)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(1, (result).doubleValue(), tolerance);
 		assertEquals(0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "log(10\u00B10)/-sqrt(4)*log(100\u00B10)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-1, (result).doubleValue(), tolerance);
 		assertEquals(0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "1-2+1*2/1^(2+1)";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(-3, (result).doubleValue(), tolerance);
 		//assertEquals(0, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "sqrt(10^log(10\u00B190))^2";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(10, (result).doubleValue(), tolerance);
 		assertEquals(90, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 
 		eqn = "asin(sin(acos(cos(atan(tan(0.5\u00B10.25))))))";
-		result = Calculator.equationProcessor(eqn);
+		result = Calculator.evalRawString(eqn);
 		assertEquals(0.5, (result).doubleValue(), tolerance);
 		assertEquals(0.25, ((Uncertainty) result).getAbsoluteUncertainty(), tolerance);
 	}
